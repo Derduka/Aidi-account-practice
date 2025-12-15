@@ -83,7 +83,7 @@
             display: flex;
             gap: 8px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
 
         .main-content {
@@ -105,19 +105,27 @@
             user-select: none;
             touch-action: none;
             text-align: center;
-            flex: 0 0 auto;
-            max-width: 180px;
+            flex: 1 1 0;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .account-item strong {
             display: block;
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .account-item small {
-            font-size: 0.75em;
+            font-size: 0.7em;
             opacity: 0.95;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
         }
 
         .account-item:hover {
@@ -146,14 +154,14 @@
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
             padding: 2px;
         }
 
         .category {
             background: white;
-            padding: 10px;
-            border-radius: 15px;
+            padding: 8px;
+            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
             display: flex;
@@ -168,17 +176,17 @@
 
         .category h3 {
             color: #0093E9;
-            margin-bottom: 4px;
-            padding-bottom: 4px;
+            margin-bottom: 3px;
+            padding-bottom: 3px;
             border-bottom: 2px solid #0093E9;
-            font-size: 0.9em;
+            font-size: 0.85em;
             font-weight: 700;
         }
 
         .category-subtitle {
             color: #999;
-            font-size: 0.7em;
-            margin-bottom: 8px;
+            font-size: 0.65em;
+            margin-bottom: 6px;
         }
 
         .dropped-items {
@@ -374,31 +382,35 @@
             
             .account-item {
                 padding: 8px 10px;
-                max-width: 150px;
             }
             
             .account-item strong {
-                font-size: 0.85em;
-            }
-            
-            .account-item small {
-                font-size: 0.7em;
-            }
-            
-            .categories {
-                grid-template-columns: 1fr;
-            }
-            
-            .category h3 {
                 font-size: 0.8em;
             }
             
-            .category-subtitle {
+            .account-item small {
                 font-size: 0.65em;
             }
             
+            .categories {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .category {
+                padding: 8px;
+            }
+            
+            .category h3 {
+                font-size: 0.75em;
+            }
+            
+            .category-subtitle {
+                font-size: 0.6em;
+            }
+            
             .dropped-item {
-                font-size: 0.7em;
+                font-size: 0.65em;
             }
             
             .controls button {
@@ -674,16 +686,16 @@
             }
         }
 
-        // 显示下一批账户（3个）
+        // 显示下一批账户（2个）
         function showNextAccount() {
             if (remainingAccounts.length === 0) {
                 showFinalScore();
                 return;
             }
 
-            // 取出最多3个账户
+            // 取出最多2个账户
             currentAccounts = [];
-            const count = Math.min(3, remainingAccounts.length);
+            const count = Math.min(2, remainingAccounts.length);
             for (let i = 0; i < count; i++) {
                 currentAccounts.push(remainingAccounts.shift());
             }
