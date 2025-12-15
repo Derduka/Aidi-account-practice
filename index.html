@@ -325,6 +325,7 @@
 
         .feedback.show {
             opacity: 1;
+            pointer-events: auto;
         }
 
         .feedback.correct {
@@ -344,6 +345,44 @@
             max-height: 70vh;
             overflow-y: auto;
             padding: 15px 20px;
+        }
+        
+        .feedback.confirm {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: correctAnim 0.5s ease;
+            font-size: 0.95em;
+            padding: 20px 25px;
+        }
+        
+        .feedback-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .feedback-buttons button {
+            padding: 8px 20px;
+            font-size: 0.9em;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .feedback-buttons .btn-yes {
+            background: white;
+            color: #f5576c;
+        }
+        
+        .feedback-buttons .btn-no {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .feedback-buttons button:active {
+            transform: scale(0.95);
         }
 
         @keyframes dropAnim {
@@ -512,70 +551,88 @@
 
         <div class="main-content">
             <div class="categories">
-                <div class="category" data-category="Current Assets">
-                    <h3>流动资产</h3>
+                <div class="category" data-category="CA">
+                    <h3>CA</h3>
                     <p class="category-subtitle">Current Assets</p>
-                    <div class="dropped-items" id="current-assets"></div>
+                    <div class="dropped-items" id="ca"></div>
                 </div>
 
-                <div class="category" data-category="Non-Current Assets">
-                    <h3>非流动资产</h3>
+                <div class="category" data-category="NCA">
+                    <h3>NCA</h3>
                     <p class="category-subtitle">Non-Current Assets</p>
-                    <div class="dropped-items" id="non-current-assets"></div>
+                    <div class="dropped-items" id="nca"></div>
                 </div>
 
-                <div class="category" data-category="Current Liabilities">
-                    <h3>流动负债</h3>
+                <div class="category" data-category="CL">
+                    <h3>CL</h3>
                     <p class="category-subtitle">Current Liabilities</p>
-                    <div class="dropped-items" id="current-liabilities"></div>
+                    <div class="dropped-items" id="cl"></div>
                 </div>
 
-                <div class="category" data-category="Non-Current Liabilities">
-                    <h3>非流动负债</h3>
+                <div class="category" data-category="NCL">
+                    <h3>NCL</h3>
                     <p class="category-subtitle">Non-Current Liabilities</p>
-                    <div class="dropped-items" id="non-current-liabilities"></div>
+                    <div class="dropped-items" id="ncl"></div>
                 </div>
 
-                <div class="category" data-category="Equity">
-                    <h3>权益</h3>
+                <div class="category" data-category="EQ">
+                    <h3>EQ</h3>
                     <p class="category-subtitle">Equity</p>
-                    <div class="dropped-items" id="equity"></div>
+                    <div class="dropped-items" id="eq"></div>
+                </div>
+                
+                <div class="category" data-category="(EQ)">
+                    <h3>(EQ)</h3>
+                    <p class="category-subtitle">Negative Equity</p>
+                    <div class="dropped-items" id="eq-neg"></div>
                 </div>
 
-                <div class="category" data-category="Income">
-                    <h3>收入</h3>
+                <div class="category" data-category="I">
+                    <h3>I</h3>
                     <p class="category-subtitle">Income</p>
-                    <div class="dropped-items" id="income"></div>
+                    <div class="dropped-items" id="i"></div>
+                </div>
+                
+                <div class="category" data-category="(I)">
+                    <h3>(I)</h3>
+                    <p class="category-subtitle">Negative Income</p>
+                    <div class="dropped-items" id="i-neg"></div>
                 </div>
 
-                <div class="category" data-category="Other Income">
-                    <h3>其他收入</h3>
+                <div class="category" data-category="OI">
+                    <h3>OI</h3>
                     <p class="category-subtitle">Other Income</p>
-                    <div class="dropped-items" id="other-income"></div>
+                    <div class="dropped-items" id="oi"></div>
                 </div>
 
-                <div class="category" data-category="Cost">
-                    <h3>成本</h3>
+                <div class="category" data-category="C">
+                    <h3>C</h3>
                     <p class="category-subtitle">Cost</p>
-                    <div class="dropped-items" id="cost"></div>
+                    <div class="dropped-items" id="c"></div>
+                </div>
+                
+                <div class="category" data-category="(C)">
+                    <h3>(C)</h3>
+                    <p class="category-subtitle">Negative Cost</p>
+                    <div class="dropped-items" id="c-neg"></div>
                 </div>
 
-                <div class="category" data-category="Selling Expense">
-                    <h3>销售费用</h3>
-                    <p class="category-subtitle">Selling Expense</p>
-                    <div class="dropped-items" id="selling-expense"></div>
+                <div class="category" data-category="SD">
+                    <h3>SD</h3>
+                    <p class="category-subtitle">Selling & Distribution</p>
+                    <div class="dropped-items" id="sd"></div>
                 </div>
 
-                <div class="category" data-category="Admin Expense">
-                    <h3>管理费用</h3>
-                    <p class="category-subtitle">Admin Expense</p>
-                    <div class="dropped-items" id="admin-expense"></div>
+                <div class="category" data-category="GA">
+                    <h3>GA</h3>
+                    <p class="category-subtitle">General & Admin</p>
+                    <div class="dropped-items" id="ga"></div>
                 </div>
 
-                <div class="category" data-category="Financial Expense">
-                    <h3>财务费用</h3>
+                <div class="category" data-category="FE">
+                    <h3>FE</h3>
                     <p class="category-subtitle">Financial Expense</p>
-                    <div class="dropped-items" id="financial-expense"></div>
+                    <div class="dropped-items" id="fe"></div>
                 </div>
             </div>
         </div>
@@ -592,87 +649,95 @@
     <script>
         // 会计账户数据
         const accountsData = [
-            // Current Assets (流动资产)
-            { name: 'Cash at bank', category: 'Current Assets', chinese: '银行存款' },
-            { name: 'Accounts receivable (debtor)', category: 'Current Assets', chinese: '应收账款' },
-            { name: 'Inventory', category: 'Current Assets', chinese: '存货' },
-            { name: 'Office supplies', category: 'Current Assets', chinese: '办公用品' },
-            { name: 'Stationery supplies', category: 'Current Assets', chinese: '文具用品' },
-            { name: 'Prepaid Expense', category: 'Current Assets', chinese: '预付费用' },
-            { name: 'GST Credits', category: 'Current Assets', chinese: 'GST抵扣' },
-            { name: 'Accrued revenue', category: 'Current Assets', chinese: '应计收入' },
+            // CA - Current Assets (流动资产)
+            { name: 'Cash at bank', category: 'CA', chinese: '银行存款' },
+            { name: 'Accounts receivable', category: 'CA', chinese: '应收账款' },
+            { name: 'Debtor', category: 'CA', chinese: '应收账款(同义)' },
+            { name: 'Inventory', category: 'CA', chinese: '存货' },
+            { name: 'Office supplies', category: 'CA', chinese: '办公用品' },
+            { name: 'Stationery supplies', category: 'CA', chinese: '文具用品' },
+            { name: 'Prepaid Expense', category: 'CA', chinese: '预付费用' },
+            { name: 'GST Credits', category: 'CA', chinese: 'GST抵扣' },
+            { name: 'Accrued revenue', category: 'CA', chinese: '应计收入' },
 
-            // Non-Current Assets (非流动资产)
-            { name: 'Land and Buildings', category: 'Non-Current Assets', chinese: '土地和建筑物' },
-            { name: 'Motor Vehicle', category: 'Non-Current Assets', chinese: '汽车' },
-            { name: 'Plant and Equipment', category: 'Non-Current Assets', chinese: '设备' },
-            { name: 'Office furniture', category: 'Non-Current Assets', chinese: '办公家具' },
-            { name: 'Office Equipment', category: 'Non-Current Assets', chinese: '办公设备' },
-            { name: 'Delivery Vehicle', category: 'Non-Current Assets', chinese: '配送车辆' },
+            // NCA - Non-Current Assets (非流动资产)
+            { name: 'Land and Buildings', category: 'NCA', chinese: '土地和建筑物' },
+            { name: 'Motor Vehicle', category: 'NCA', chinese: '汽车' },
+            { name: 'Plant and Equipment', category: 'NCA', chinese: '设备' },
+            { name: 'Office furniture', category: 'NCA', chinese: '办公家具' },
+            { name: 'Office Equipment', category: 'NCA', chinese: '办公设备' },
+            { name: 'Delivery Vehicle', category: 'NCA', chinese: '配送车辆' },
 
-            // Current Liabilities (流动负债)
-            { name: 'Accounts payable (creditors)', category: 'Current Liabilities', chinese: '应付账款' },
-            { name: 'Bank overdraft', category: 'Current Liabilities', chinese: '银行透支' },
-            { name: 'Short term loan', category: 'Current Liabilities', chinese: '短期贷款' },
-            { name: 'GST Payable', category: 'Current Liabilities', chinese: '应付GST' },
-            { name: 'Accrued expense', category: 'Current Liabilities', chinese: '应计费用' },
-            { name: 'Unearned income/Revenue', category: 'Current Liabilities', chinese: '预收收入' },
+            // CL - Current Liabilities (流动负债)
+            { name: 'Accounts payable', category: 'CL', chinese: '应付账款' },
+            { name: 'Creditors', category: 'CL', chinese: '应付账款(同义)' },
+            { name: 'Bank overdraft', category: 'CL', chinese: '银行透支' },
+            { name: 'Short term loan', category: 'CL', chinese: '短期贷款' },
+            { name: 'GST Payable', category: 'CL', chinese: '应付GST' },
+            { name: 'Accrued expense', category: 'CL', chinese: '应计费用' },
+            { name: 'Unearned income/Revenue', category: 'CL', chinese: '预收收入' },
 
-            // Non-Current Liabilities (非流动负债)
-            { name: 'Long-term loan', category: 'Non-Current Liabilities', chinese: '长期贷款' },
-            { name: 'Mortgage', category: 'Non-Current Liabilities', chinese: '抵押贷款' },
+            // NCL - Non-Current Liabilities (非流动负债)
+            { name: 'Long-term loan', category: 'NCL', chinese: '长期贷款' },
+            { name: 'Mortgage', category: 'NCL', chinese: '抵押贷款' },
 
-            // Equity (权益)
-            { name: 'Capital', category: 'Equity', chinese: '资本' },
-            { name: 'Profits/Loss', category: 'Equity', chinese: '利润/亏损' },
-            { name: 'Drawings', category: 'Equity', chinese: '提款' },
+            // EQ - Equity (权益)
+            { name: 'Capital', category: 'EQ', chinese: '资本' },
 
-            // Income (收入)
-            { name: 'Sales', category: 'Income', chinese: '销售收入' },
-            { name: 'Fees', category: 'Income', chinese: '服务费' },
-            { name: 'Sales Return', category: 'Income', chinese: '销售退回' },
-            { name: 'Discount allowed', category: 'Income', chinese: '销售折扣' },
+            // (EQ) - 负权益 (Drawings和Loss)
+            { name: 'Drawings', category: '(EQ)', chinese: '提款' },
+            { name: 'Loss', category: '(EQ)', chinese: '亏损' },
 
-            // Other Income (其他收入)
-            { name: 'Gain on sale of assets', category: 'Other Income', chinese: '资产处置收益' },
-            { name: 'Interest received', category: 'Other Income', chinese: '利息收入' },
-            { name: 'Rent received', category: 'Other Income', chinese: '租金收入' },
-            { name: 'Investment income', category: 'Other Income', chinese: '投资收益' },
+            // I - Income (收入)
+            { name: 'Sales', category: 'I', chinese: '销售收入' },
+            { name: 'Fees', category: 'I', chinese: '服务费' },
 
-            // Cost (成本)
-            { name: 'Cost of sale (Cost of goods sold)', category: 'Cost', chinese: '销售成本' },
-            { name: 'Freight inwards (carriage inwards)', category: 'Cost', chinese: '进货运费' },
-            { name: 'Discount Received', category: 'Cost', chinese: '进货折扣' },
+            // (I) - 负收入 (Sales Return, Discount allowed)
+            { name: 'Sales Return', category: '(I)', chinese: '销售退回' },
+            { name: 'Discount allowed', category: '(I)', chinese: '销售折扣' },
 
-            // Selling and distributions expense (销售费用)
-            { name: 'Advertising', category: 'Selling Expense', chinese: '广告费' },
-            { name: 'Sales wages (salaries)', category: 'Selling Expense', chinese: '销售工资' },
-            { name: 'Sales commission', category: 'Selling Expense', chinese: '销售佣金' },
-            { name: 'Freight outwards (carriage outwards)', category: 'Selling Expense', chinese: '销售运费' },
-            { name: 'Repair of delivery vehicle', category: 'Selling Expense', chinese: '配送车维修' },
-            { name: 'Insurance on delivery vehicle', category: 'Selling Expense', chinese: '配送车保险' },
-            { name: 'Wages on delivery vehicle driver', category: 'Selling Expense', chinese: '司机工资' },
-            { name: 'Delivery fee', category: 'Selling Expense', chinese: '配送费' },
-            { name: 'Bad debts', category: 'Selling Expense', chinese: '坏账' },
-            { name: 'Doubtful debts', category: 'Selling Expense', chinese: '可疑账款' },
-            { name: 'Promotion expense', category: 'Selling Expense', chinese: '促销费用' },
+            // OI - Other Income (其他收入)
+            { name: 'Gain on sale of assets', category: 'OI', chinese: '资产处置收益' },
+            { name: 'Interest received', category: 'OI', chinese: '利息收入' },
+            { name: 'Rent received', category: 'OI', chinese: '租金收入' },
+            { name: 'Investment income', category: 'OI', chinese: '投资收益' },
 
-            // General and administration expense (管理费用)
-            { name: 'Office wages (salaries)', category: 'Admin Expense', chinese: '办公室工资' },
-            { name: 'Insurance', category: 'Admin Expense', chinese: '保险费' },
-            { name: 'Electricity', category: 'Admin Expense', chinese: '电费' },
-            { name: 'Repair and Maintenance', category: 'Admin Expense', chinese: '维修费' },
-            { name: 'Rent', category: 'Admin Expense', chinese: '租金' },
-            { name: 'Telephone', category: 'Admin Expense', chinese: '电话费' },
-            { name: 'Stationery expense', category: 'Admin Expense', chinese: '文具费' },
-            { name: 'Rates and taxes', category: 'Admin Expense', chinese: '税费' },
-            { name: 'Postage', category: 'Admin Expense', chinese: '邮费' },
-            { name: 'Depreciation on office furniture', category: 'Admin Expense', chinese: '办公家具折旧' },
-            { name: 'Loss on sale of office furniture', category: 'Admin Expense', chinese: '办公家具处置损失' },
+            // C - Cost (成本)
+            { name: 'Cost of sale (Cost of goods sold)', category: 'C', chinese: '销售成本' },
+            { name: 'Freight inwards (carriage inwards)', category: 'C', chinese: '进货运费' },
 
-            // Financial expense (财务费用)
-            { name: 'Bank fees or bank charge', category: 'Financial Expense', chinese: '银行手续费' },
-            { name: 'Interest on loan (Interest expense)', category: 'Financial Expense', chinese: '贷款利息' }
+            // (C) - 负成本 (Discount Received)
+            { name: 'Discount Received', category: '(C)', chinese: '进货折扣' },
+
+            // SD - Selling and distributions expense (销售费用)
+            { name: 'Advertising', category: 'SD', chinese: '广告费' },
+            { name: 'Sales wages (salaries)', category: 'SD', chinese: '销售工资' },
+            { name: 'Sales commission', category: 'SD', chinese: '销售佣金' },
+            { name: 'Freight outwards (carriage outwards)', category: 'SD', chinese: '销售运费' },
+            { name: 'Repair of delivery vehicle', category: 'SD', chinese: '配送车维修' },
+            { name: 'Insurance on delivery vehicle', category: 'SD', chinese: '配送车保险' },
+            { name: 'Wages on delivery vehicle driver', category: 'SD', chinese: '司机工资' },
+            { name: 'Delivery fee', category: 'SD', chinese: '配送费' },
+            { name: 'Bad debts', category: 'SD', chinese: '坏账' },
+            { name: 'Doubtful debts', category: 'SD', chinese: '可疑账款' },
+            { name: 'Promotion expense', category: 'SD', chinese: '促销费用' },
+
+            // GA - General and administration expense (管理费用)
+            { name: 'Office wages (salaries)', category: 'GA', chinese: '办公室工资' },
+            { name: 'Insurance', category: 'GA', chinese: '保险费' },
+            { name: 'Electricity', category: 'GA', chinese: '电费' },
+            { name: 'Repair and Maintenance', category: 'GA', chinese: '维修费' },
+            { name: 'Rent', category: 'GA', chinese: '租金' },
+            { name: 'Telephone', category: 'GA', chinese: '电话费' },
+            { name: 'Stationery expense', category: 'GA', chinese: '文具费' },
+            { name: 'Rates and taxes', category: 'GA', chinese: '税费' },
+            { name: 'Postage', category: 'GA', chinese: '邮费' },
+            { name: 'Depreciation on office furniture', category: 'GA', chinese: '办公家具折旧' },
+            { name: 'Loss on sale of office furniture', category: 'GA', chinese: '办公家具处置损失' },
+
+            // FE - Financial expense (财务费用)
+            { name: 'Bank fees or bank charge', category: 'FE', chinese: '银行手续费' },
+            { name: 'Interest on loan (Interest expense)', category: 'FE', chinese: '贷款利息' }
         ];
 
         let remainingAccounts = [...accountsData];
@@ -856,11 +921,12 @@
 
         // 添加到分类区域
         function addToCategory(account, category, isCorrect) {
-            const categoryId = category.toLowerCase().replace(/\s+/g, '-');
+            const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '');
             const droppedItems = document.getElementById(categoryId);
             
             const item = document.createElement('div');
             item.className = `dropped-item ${isCorrect ? '' : 'incorrect'}`;
+            item.setAttribute('data-account', JSON.stringify(account));
             item.innerHTML = `
                 <span title="${account.name}\n${account.chinese}">
                     <strong>${account.name}</strong>
@@ -871,9 +937,16 @@
             droppedItems.appendChild(item);
         }
 
-        // 移除项目
+        // 移除项目并返回后台库
         function removeItem(button) {
-            button.parentElement.remove();
+            const droppedItem = button.parentElement;
+            const accountData = JSON.parse(droppedItem.getAttribute('data-account'));
+            
+            // 返回到后台库（不是待选区）
+            remainingAccounts.push(accountData);
+            
+            // 移除已分类的项目
+            droppedItem.remove();
         }
 
         // 显示反馈
@@ -904,23 +977,25 @@
 
         // 重新开始
         function resetGame() {
-            showFeedback('AIDI - 确定要重新开始吗？\n当前进度将被清除\n\n点击屏幕任意处取消', 'info');
-            
-            // 3秒后执行重置，期间点击可取消
-            const resetTimeout = setTimeout(() => {
-                initGame();
-            }, 3000);
-            
-            // 点击任意处取消
-            const cancelReset = () => {
-                clearTimeout(resetTimeout);
-                document.getElementById('feedback').classList.remove('show');
-                document.removeEventListener('click', cancelReset);
-            };
-            
-            setTimeout(() => {
-                document.addEventListener('click', cancelReset, { once: true });
-            }, 100);
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                AIDI - 确定要重新开始吗？<br>
+                当前进度将被清除
+                <div class="feedback-buttons">
+                    <button class="btn-yes" onclick="confirmReset()">确定</button>
+                    <button class="btn-no" onclick="cancelReset()">取消</button>
+                </div>
+            `;
+            feedback.className = 'feedback confirm show';
+        }
+        
+        function confirmReset() {
+            document.getElementById('feedback').classList.remove('show');
+            initGame();
+        }
+        
+        function cancelReset() {
+            document.getElementById('feedback').classList.remove('show');
         }
 
         // 查看答案
