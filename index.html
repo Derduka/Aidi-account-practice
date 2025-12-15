@@ -118,8 +118,21 @@
         }
 
         .account-item.dragging {
-            opacity: 0.7;
+            opacity: 0.5;
             transform: rotate(5deg) scale(1.05);
+            z-index: 9999 !important;
+            position: relative;
+        }
+        
+        /* 移动端拖拽克隆元素 */
+        .drag-clone {
+            position: fixed;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0.9;
+            transition: none;
+            box-shadow: 0 10px 40px rgba(0, 147, 233, 0.8) !important;
+            transform-origin: center;
         }
 
         .categories {
@@ -844,7 +857,7 @@
 
         // 重新开始
         function resetGame() {
-            if (confirm('确定要重新开始吗？当前进度将被清除。')) {
+            if (confirm('AIDI - 确定要重新开始吗？当前进度将被清除。')) {
                 initGame();
             }
         }
@@ -868,28 +881,46 @@
 
         // 移动端触摸支持
         let touchedElement = null;
+        let dragClone = null;
         let touchStartX = 0;
         let touchStartY = 0;
+        let elementOffsetX = 0;
+        let elementOffsetY = 0;
 
         function handleTouchStart(e) {
             touchedElement = e.target.closest('.account-item');
             if (touchedElement) {
                 const touch = e.touches[0];
+                const rect = touchedElement.getBoundingClientRect();
+                
                 touchStartX = touch.clientX;
                 touchStartY = touch.clientY;
+                elementOffsetX = touch.clientX - rect.left;
+                elementOffsetY = touch.clientY - rect.top;
+                
                 touchedElement.classList.add('dragging');
+                
+                // 创建拖拽克隆元素
+                dragClone = touchedElement.cloneNode(true);
+                dragClone.classList.add('drag-clone');
+                dragClone.classList.remove('dragging');
+                dragClone.style.width = rect.width + 'px';
+                dragClone.style.height = rect.height + 'px';
+                dragClone.style.left = rect.left + 'px';
+                dragClone.style.top = rect.top + 'px';
+                document.body.appendChild(dragClone);
             }
         }
 
         function handleTouchMove(e) {
-            if (!touchedElement) return;
+            if (!touchedElement || !dragClone) return;
             e.preventDefault();
             
             const touch = e.touches[0];
-            const moveX = touch.clientX - touchStartX;
-            const moveY = touch.clientY - touchStartY;
             
-            touchedElement.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            // 移动克隆元素（固定定位，跟随手指）
+            dragClone.style.left = (touch.clientX - elementOffsetX) + 'px';
+            dragClone.style.top = (touch.clientY - elementOffsetY) + 'px';
             
             // 检测触摸位置下的分类区域
             const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
@@ -913,8 +944,13 @@
             const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
             const categoryBelow = elementBelow?.closest('.category');
             
-            touchedElement.style.transform = '';
             touchedElement.classList.remove('dragging');
+            
+            // 移除克隆元素
+            if (dragClone) {
+                dragClone.remove();
+                dragClone = null;
+            }
             
             // 移除所有高亮
             document.querySelectorAll('.category').forEach(cat => {
