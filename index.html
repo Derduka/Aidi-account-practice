@@ -731,31 +731,31 @@
             // CA - Current Assets (流动资产)
             { name: 'Cash at bank', category: 'CA', chinese: '银行存款' },
             { name: 'Accounts receivable', category: 'CA', chinese: '应收账款' },
-            { name: 'Debtor', category: 'CA', chinese: '债务人' },
+            { name: 'Debtor', category: 'CA', chinese: '应收账款' },
             { name: 'Inventory', category: 'CA', chinese: '存货' },
             { name: 'Office supplies', category: 'CA', chinese: '办公用品' },
             { name: 'Stationery supplies', category: 'CA', chinese: '文具用品' },
             { name: 'Prepaid Expense', category: 'CA', chinese: '预付费用' },
-            { name: 'GST Credits', category: 'CA', chinese: 'GST抵扣' },
-            { name: 'Accrued revenue', category: 'CA', chinese: '应计收入' },
+            { name: 'GST Credits', category: 'CA', chinese: '消费税进项税额' },
+            { name: 'Accrued revenue', category: 'CA', chinese: '应收收入' },
 
             // NCA - Non-Current Assets (非流动资产)
-            { name: 'Land and Buildings', category: 'NCA', chinese: '土地和建筑物' },
-            { name: 'Motor Vehicle', category: 'NCA', chinese: '汽车' },
-            { name: 'Plant and Equipment', category: 'NCA', chinese: '设备' },
+            { name: 'Land and Buildings', category: 'NCA', chinese: '土地及房屋建筑物' },
+            { name: 'Motor Vehicle', category: 'NCA', chinese: '机动车辆' },
+            { name: 'Plant and Equipment', category: 'NCA', chinese: '机器设备' },
             { name: 'Office furniture', category: 'NCA', chinese: '办公家具' },
             { name: 'Office Equipment', category: 'NCA', chinese: '办公设备' },
-            { name: 'Delivery Vehicle', category: 'NCA', chinese: '配送车辆' },
+            { name: 'Delivery Vehicle', category: 'NCA', chinese: '运输车辆' },
 
             // CL - Current Liabilities (流动负债)
             { name: 'Accounts payable', category: 'CL', chinese: '应付账款' },
-            { name: 'Creditors', category: 'CL', chinese: '债权人' },
+            { name: 'Creditors', category: 'CL', chinese: '应付账款' },
             { name: 'Bank overdraft', category: 'CL', chinese: '银行透支' },
-            { name: 'Short term loan', category: 'CL', chinese: '短期贷款' },
-            { name: 'GST Payable', category: 'CL', chinese: '应付GST' },
-            { name: 'Accrued expense', category: 'CL', chinese: '应计费用' },
-            { name: 'Unearned income', category: 'CL', chinese: '预收收入' },
-            { name: 'Unearned Revenue', category: 'CL', chinese: '预收收入' },
+            { name: 'Short term loan', category: 'CL', chinese: '短期借款' },
+            { name: 'GST Payable', category: 'CL', chinese: '应付消费税' },
+            { name: 'Accrued expense', category: 'CL', chinese: '应付费用' },
+            { name: 'Unearned income', category: 'CL', chinese: '预收账款' },
+            { name: 'Unearned Revenue', category: 'CL', chinese: '预收账款' },
 
             // NCL - Non-Current Liabilities (非流动负债)
             { name: 'Long-term loan', category: 'NCL', chinese: '长期贷款' },
@@ -765,16 +765,16 @@
             { name: 'Capital', category: 'EQ', chinese: '资本' },
 
             // (EQ) - 负权益 (Drawings和Loss)
-            { name: 'Drawings', category: '(EQ)', chinese: '提款' },
+            { name: 'Drawings', category: '(EQ)', chinese: '业主提款' },
             { name: 'Loss', category: '(EQ)', chinese: '亏损' },
 
             // I - Income (收入)
             { name: 'Sales', category: 'I', chinese: '销售收入' },
-            { name: 'Fees', category: 'I', chinese: '服务费' },
+            { name: 'Fees', category: 'I', chinese: '服务收入' },
 
             // (I) - 负收入 (Sales Return, Discount allowed)
             { name: 'Sales Return', category: '(I)', chinese: '销售退回' },
-            { name: 'Discount allowed', category: '(I)', chinese: '给予折扣' },
+            { name: 'Discount allowed', category: '(I)', chinese: '销售折扣' },
 
             // OI - Other Income (其他收入)
             { name: 'Gain on sale of assets', category: 'OI', chinese: '资产处置收益' },
@@ -784,37 +784,37 @@
 
             // C - Cost (成本)
             { name: 'Cost of sale', category: 'C', chinese: '销售成本' },
-            { name: 'Cost of goods sold', category: 'C', chinese: '销售成本' },
+            { name: 'Cost of goods sold', category: 'C', chinese: '销货成本' },
             { name: 'Freight inwards', category: 'C', chinese: '进货运费' },
             { name: 'Carriage inwards', category: 'C', chinese: '进货运费' },
-            { name: 'Purchase', category: 'C', chinese: '采购' },
+            { name: 'Purchase', category: 'C', chinese: '购货' },
 
             // (C) - 负成本 (Discount Received)
-            { name: 'Discount Received', category: '(C)', chinese: '收到折扣' },
+            { name: 'Discount Received', category: '(C)', chinese: '购货折扣' },
 
             // SD - Selling and distributions expense (销售费用)
             { name: 'Advertising', category: 'SD', chinese: '广告费' },
-            { name: 'Sales wages', category: 'SD', chinese: '销售人员工资' },
-            { name: 'Sales salaries', category: 'SD', chinese: '销售人员薪金' },
+            { name: 'Sales wages', category: 'SD', chinese: '销售工资' },
+            { name: 'Sales salaries', category: 'SD', chinese: '销售薪金' },
             { name: 'Sales commission', category: 'SD', chinese: '销售佣金' },
-            { name: 'Freight outwards', category: 'SD', chinese: '销售运费' },
-            { name: 'Carriage outwards', category: 'SD', chinese: '销售运费' },
-            { name: 'Repair of delivery vehicle', category: 'SD', chinese: '配送车辆维修' },
-            { name: 'Insurance on delivery vehicle', category: 'SD', chinese: '配送车辆保险' },
-            { name: 'Wages on delivery vehicle driver', category: 'SD', chinese: '配送司机工资' },
+            { name: 'Freight outwards', category: 'SD', chinese: '销货运费' },
+            { name: 'Carriage outwards', category: 'SD', chinese: '销货运费' },
+            { name: 'Repair of delivery vehicle', category: 'SD', chinese: '运输车辆修理费' },
+            { name: 'Insurance on delivery vehicle', category: 'SD', chinese: '运输车辆保险费' },
+            { name: 'Wages on delivery vehicle driver', category: 'SD', chinese: '司机工资' },
             { name: 'Delivery fee', category: 'SD', chinese: '配送费' },
             { name: 'Bad debts', category: 'SD', chinese: '坏账' },
             { name: 'Bad debts expense', category: 'SD', chinese: '坏账费用' },
             { name: 'Doubtful debts', category: 'SD', chinese: '呆账' },
             { name: 'Doubtful debts expense', category: 'SD', chinese: '呆账费用' },
-            { name: 'Promotion expense', category: 'SD', chinese: '促销费用' },
+            { name: 'Promotion expense', category: 'SD', chinese: '促销费' },
 
             // GA - General and administration expense (管理费用)
-            { name: 'Office wages', category: 'GA', chinese: '办公室工资' },
-            { name: 'Office salaries', category: 'GA', chinese: '办公室薪金' },
+            { name: 'Office wages', category: 'GA', chinese: '办公工资' },
+            { name: 'Office salaries', category: 'GA', chinese: '办公薪金' },
             { name: 'Insurance', category: 'GA', chinese: '保险费' },
             { name: 'Electricity', category: 'GA', chinese: '电费' },
-            { name: 'Repair and Maintenance', category: 'GA', chinese: '维修保养费' },
+            { name: 'Repair and Maintenance', category: 'GA', chinese: '修理费' },
             { name: 'Rent', category: 'GA', chinese: '租金' },
             { name: 'Telephone', category: 'GA', chinese: '电话费' },
             { name: 'Stationery expense', category: 'GA', chinese: '文具费' },
