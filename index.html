@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>会计账户分类练习 v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0093E9 0%, #80D0C7 100%);
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-board {
+            background: rgba(255, 255, 255, 0.95);
+            color: #0093E9;
+            padding: 8px 18px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.85em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-board span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .account-pool {
+            background: white;
+            padding: 12px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        .account-pool h2 {
+            color: #0093E9;
+            margin-bottom: 10px;
+            font-size: 1em;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .account-item {
+            background: linear-gradient(135deg, #0093E9 0%, #80D0C7 100%);
+            color: white;
+            padding: 10px 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            cursor: move;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 147, 233, 0.4);
+            user-select: none;
+            touch-action: none;
+            text-align: center;
+        }
+
+        .account-item strong {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .account-item small {
+            font-size: 0.75em;
+            opacity: 0.95;
+        }
+
+        .account-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 147, 233, 0.6);
+        }
+
+        .account-item.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+
+        .category {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category.drag-over {
+            background: #e8f5e9;
+            transform: scale(1.03);
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.7);
+        }
+
+        .category h3 {
+            color: #0093E9;
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #0093E9;
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+
+        .category-subtitle {
+            color: #999;
+            font-size: 0.7em;
+            margin-bottom: 8px;
+        }
+
+        .dropped-items {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-content: flex-start;
+        }
+
+        .dropped-item {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            animation: dropAnim 0.3s ease;
+            font-size: 0.58em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            max-width: fit-content;
+            transition: all 0.2s;
+        }
+
+        .dropped-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropped-item.incorrect {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .dropped-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 150px;
+        }
+
+        .dropped-item strong {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .dropped-item button {
+            background: rgba(255, 255, 255, 0.4);
+            border: none;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            margin-left: 4px;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .dropped-item button:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(1.15) rotate(90deg);
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 10px;
+            flex-shrink: 0;
+            padding-bottom: 5px;
+        }
+
+        button {
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.85em;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 3px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .controls button:nth-child(1) {
+            background: linear-gradient(135deg, #0093E9 0%, #80D0C7 100%);
+        }
+
+        .controls button:nth-child(2) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .controls button:nth-child(3) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .feedback.show {
+            opacity: 1;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            animation: correctAnim 0.5s ease;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes dropAnim {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes correctAnim {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            25% { transform: translate(-50%, -50%) translateX(-10px); }
+            75% { transform: translate(-50%, -50%) translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 180px 1fr;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .account-pool h2 {
+                font-size: 0.9em;
+            }
+            
+            .account-item {
+                padding: 8px 10px;
+            }
+            
+            .account-item strong {
+                font-size: 0.85em;
+            }
+            
+            .account-item small {
+                font-size: 0.7em;
+            }
+            
+            .category h3 {
+                font-size: 0.8em;
+            }
+            
+            .category-subtitle {
+                font-size: 0.65em;
+            }
+            
+            .dropped-item {
+                font-size: 0.7em;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 240px 1fr;
+            }
+            
+            .categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1400px;
+            }
+            
+            .main-content {
+                grid-template-columns: 260px 1fr;
+            }
+            
+            .categories {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            header h1 {
+                font-size: 1.6em;
+            }
+            
+            .score-board {
+                font-size: 0.95em;
+            }
+        }
+
+        /* 自定义滚动条 */
+        .categories::-webkit-scrollbar,
+        .dropped-items::-webkit-scrollbar,
+        .account-pool::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .categories::-webkit-scrollbar-track,
+        .dropped-items::-webkit-scrollbar-track,
+        .account-pool::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .categories::-webkit-scrollbar-thumb,
+        .dropped-items::-webkit-scrollbar-thumb,
+        .account-pool::-webkit-scrollbar-thumb {
+            background: rgba(0, 147, 233, 0.5);
+            border-radius: 10px;
+        }
+
+        .categories::-webkit-scrollbar-thumb:hover,
+        .dropped-items::-webkit-scrollbar-thumb:hover,
+        .account-pool::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 147, 233, 0.8);
+        }
+
+        /* 移动端触摸优化 */
+        @media (hover: none) {
+            .account-item:active {
+                transform: scale(0.97);
+            }
+            
+            button:active {
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 AIDI会计账户分类练习</h1>
+            <div class="score-board">
+                <span>得分: <span id="score">0</span></span> | 
+                <span>答题: <span id="answered">0</span></span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="account-pool">
+                <h2>📝 待分类账户</h2>
+                <div id="accountList"></div>
+            </div>
+
+            <div class="categories">
+                <div class="category" data-category="Current Assets">
+                    <h3>流动资产</h3>
+                    <p class="category-subtitle">Current Assets</p>
+                    <div class="dropped-items" id="current-assets"></div>
+                </div>
+
+                <div class="category" data-category="Non-Current Assets">
+                    <h3>非流动资产</h3>
+                    <p class="category-subtitle">Non-Current Assets</p>
+                    <div class="dropped-items" id="non-current-assets"></div>
+                </div>
+
+                <div class="category" data-category="Current Liabilities">
+                    <h3>流动负债</h3>
+                    <p class="category-subtitle">Current Liabilities</p>
+                    <div class="dropped-items" id="current-liabilities"></div>
+                </div>
+
+                <div class="category" data-category="Non-Current Liabilities">
+                    <h3>非流动负债</h3>
+                    <p class="category-subtitle">Non-Current Liabilities</p>
+                    <div class="dropped-items" id="non-current-liabilities"></div>
+                </div>
+
+                <div class="category" data-category="Equity">
+                    <h3>权益</h3>
+                    <p class="category-subtitle">Equity</p>
+                    <div class="dropped-items" id="equity"></div>
+                </div>
+
+                <div class="category" data-category="Income">
+                    <h3>收入</h3>
+                    <p class="category-subtitle">Income</p>
+                    <div class="dropped-items" id="income"></div>
+                </div>
+
+                <div class="category" data-category="Other Income">
+                    <h3>其他收入</h3>
+                    <p class="category-subtitle">Other Income</p>
+                    <div class="dropped-items" id="other-income"></div>
+                </div>
+
+                <div class="category" data-category="Cost">
+                    <h3>成本</h3>
+                    <p class="category-subtitle">Cost</p>
+                    <div class="dropped-items" id="cost"></div>
+                </div>
+
+                <div class="category" data-category="Selling Expense">
+                    <h3>销售费用</h3>
+                    <p class="category-subtitle">Selling Expense</p>
+                    <div class="dropped-items" id="selling-expense"></div>
+                </div>
+
+                <div class="category" data-category="Admin Expense">
+                    <h3>管理费用</h3>
+                    <p class="category-subtitle">Admin Expense</p>
+                    <div class="dropped-items" id="admin-expense"></div>
+                </div>
+
+                <div class="category" data-category="Financial Expense">
+                    <h3>财务费用</h3>
+                    <p class="category-subtitle">Financial Expense</p>
+                    <div class="dropped-items" id="financial-expense"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="nextAccount()">下一题</button>
+            <button onclick="resetGame()">重新开始</button>
+            <button onclick="showAnswer()">查看答案</button>
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        // 会计账户数据
+        const accountsData = [
+            // Current Assets (流动资产)
+            { name: 'Cash at bank', category: 'Current Assets', chinese: '银行存款' },
+            { name: 'Accounts receivable (debtor)', category: 'Current Assets', chinese: '应收账款' },
+            { name: 'Inventory', category: 'Current Assets', chinese: '存货' },
+            { name: 'Office supplies', category: 'Current Assets', chinese: '办公用品' },
+            { name: 'Stationery supplies', category: 'Current Assets', chinese: '文具用品' },
+            { name: 'Prepaid Expense', category: 'Current Assets', chinese: '预付费用' },
+            { name: 'GST Credits', category: 'Current Assets', chinese: 'GST抵扣' },
+            { name: 'Accrued revenue', category: 'Current Assets', chinese: '应计收入' },
+
+            // Non-Current Assets (非流动资产)
+            { name: 'Land and Buildings', category: 'Non-Current Assets', chinese: '土地和建筑物' },
+            { name: 'Motor Vehicle', category: 'Non-Current Assets', chinese: '汽车' },
+            { name: 'Plant and Equipment', category: 'Non-Current Assets', chinese: '设备' },
+            { name: 'Office furniture', category: 'Non-Current Assets', chinese: '办公家具' },
+            { name: 'Office Equipment', category: 'Non-Current Assets', chinese: '办公设备' },
+            { name: 'Delivery Vehicle', category: 'Non-Current Assets', chinese: '配送车辆' },
+
+            // Current Liabilities (流动负债)
+            { name: 'Accounts payable (creditors)', category: 'Current Liabilities', chinese: '应付账款' },
+            { name: 'Bank overdraft', category: 'Current Liabilities', chinese: '银行透支' },
+            { name: 'Short term loan', category: 'Current Liabilities', chinese: '短期贷款' },
+            { name: 'GST Payable', category: 'Current Liabilities', chinese: '应付GST' },
+            { name: 'Accrued expense', category: 'Current Liabilities', chinese: '应计费用' },
+            { name: 'Unearned income/Revenue', category: 'Current Liabilities', chinese: '预收收入' },
+
+            // Non-Current Liabilities (非流动负债)
+            { name: 'Long-term loan', category: 'Non-Current Liabilities', chinese: '长期贷款' },
+            { name: 'Mortgage', category: 'Non-Current Liabilities', chinese: '抵押贷款' },
+
+            // Equity (权益)
+            { name: 'Capital', category: 'Equity', chinese: '资本' },
+            { name: 'Profits/Loss', category: 'Equity', chinese: '利润/亏损' },
+            { name: 'Drawings', category: 'Equity', chinese: '提款' },
+
+            // Income (收入)
+            { name: 'Sales', category: 'Income', chinese: '销售收入' },
+            { name: 'Fees', category: 'Income', chinese: '服务费' },
+            { name: 'Sales Return', category: 'Income', chinese: '销售退回' },
+            { name: 'Discount allowed', category: 'Income', chinese: '销售折扣' },
+
+            // Other Income (其他收入)
+            { name: 'Gain on sale of assets', category: 'Other Income', chinese: '资产处置收益' },
+            { name: 'Interest received', category: 'Other Income', chinese: '利息收入' },
+            { name: 'Rent received', category: 'Other Income', chinese: '租金收入' },
+            { name: 'Investment income', category: 'Other Income', chinese: '投资收益' },
+
+            // Cost (成本)
+            { name: 'Cost of sale (Cost of goods sold)', category: 'Cost', chinese: '销售成本' },
+            { name: 'Freight inwards (carriage inwards)', category: 'Cost', chinese: '进货运费' },
+            { name: 'Discount Received', category: 'Cost', chinese: '进货折扣' },
+
+            // Selling and distributions expense (销售费用)
+            { name: 'Advertising', category: 'Selling Expense', chinese: '广告费' },
+            { name: 'Sales wages (salaries)', category: 'Selling Expense', chinese: '销售工资' },
+            { name: 'Sales commission', category: 'Selling Expense', chinese: '销售佣金' },
+            { name: 'Freight outwards (carriage outwards)', category: 'Selling Expense', chinese: '销售运费' },
+            { name: 'Repair of delivery vehicle', category: 'Selling Expense', chinese: '配送车维修' },
+            { name: 'Insurance on delivery vehicle', category: 'Selling Expense', chinese: '配送车保险' },
+            { name: 'Wages on delivery vehicle driver', category: 'Selling Expense', chinese: '司机工资' },
+            { name: 'Delivery fee', category: 'Selling Expense', chinese: '配送费' },
+            { name: 'Bad debts', category: 'Selling Expense', chinese: '坏账' },
+            { name: 'Doubtful debts', category: 'Selling Expense', chinese: '可疑账款' },
+            { name: 'Promotion expense', category: 'Selling Expense', chinese: '促销费用' },
+
+            // General and administration expense (管理费用)
+            { name: 'Office wages (salaries)', category: 'Admin Expense', chinese: '办公室工资' },
+            { name: 'Insurance', category: 'Admin Expense', chinese: '保险费' },
+            { name: 'Electricity', category: 'Admin Expense', chinese: '电费' },
+            { name: 'Repair and Maintenance', category: 'Admin Expense', chinese: '维修费' },
+            { name: 'Rent', category: 'Admin Expense', chinese: '租金' },
+            { name: 'Telephone', category: 'Admin Expense', chinese: '电话费' },
+            { name: 'Stationery expense', category: 'Admin Expense', chinese: '文具费' },
+            { name: 'Rates and taxes', category: 'Admin Expense', chinese: '税费' },
+            { name: 'Postage', category: 'Admin Expense', chinese: '邮费' },
+            { name: 'Depreciation on office furniture', category: 'Admin Expense', chinese: '办公家具折旧' },
+            { name: 'Loss on sale of office furniture', category: 'Admin Expense', chinese: '办公家具处置损失' },
+
+            // Financial expense (财务费用)
+            { name: 'Bank fees or bank charge', category: 'Financial Expense', chinese: '银行手续费' },
+            { name: 'Interest on loan (Interest expense)', category: 'Financial Expense', chinese: '贷款利息' }
+        ];
+
+        let remainingAccounts = [...accountsData];
+        let currentAccounts = []; // 当前显示的3个账户
+        let score = 0;
+        let answered = 0;
+
+        // 初始化游戏
+        function initGame() {
+            remainingAccounts = [...accountsData];
+            shuffleArray(remainingAccounts);
+            score = 0;
+            answered = 0;
+            updateScore();
+            clearCategories();
+            showNextAccount();
+        }
+
+        // 打乱数组
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // 显示下一批账户（3个）
+        function showNextAccount() {
+            if (remainingAccounts.length === 0) {
+                showFinalScore();
+                return;
+            }
+
+            // 取出最多3个账户
+            currentAccounts = [];
+            const count = Math.min(3, remainingAccounts.length);
+            for (let i = 0; i < count; i++) {
+                currentAccounts.push(remainingAccounts.shift());
+            }
+
+            const accountList = document.getElementById('accountList');
+            accountList.innerHTML = '';
+            
+            // 显示所有账户
+            currentAccounts.forEach(account => {
+                const div = document.createElement('div');
+                div.className = 'account-item';
+                div.draggable = true;
+                div.setAttribute('data-account', JSON.stringify(account));
+                div.innerHTML = `
+                    <strong>${account.name}</strong><br>
+                    <small>${account.chinese}</small>
+                `;
+                
+                // 添加拖拽事件
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragend', handleDragEnd);
+                
+                // 添加移动端触摸事件
+                div.addEventListener('touchstart', handleTouchStart);
+                div.addEventListener('touchmove', handleTouchMove);
+                div.addEventListener('touchend', handleTouchEnd);
+                
+                accountList.appendChild(div);
+            });
+        }
+
+        // 下一题
+        function nextAccount() {
+            showNextAccount();
+        }
+
+        // 拖拽开始
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-account'));
+        }
+
+        // 拖拽结束
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        // 设置分类区域的拖拽事件
+        document.querySelectorAll('.category').forEach(category => {
+            category.addEventListener('dragover', handleDragOver);
+            category.addEventListener('drop', handleDrop);
+            category.addEventListener('dragleave', handleDragLeave);
+        });
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            if (e.target.classList.contains('category')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            const accountData = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const droppedCategory = e.currentTarget.getAttribute('data-category');
+            
+            // 找到被拖拽的元素
+            const draggedElement = document.querySelector('.account-item.dragging');
+            
+            checkAnswer(accountData, droppedCategory, draggedElement);
+        }
+
+        // 检查答案
+        function checkAnswer(account, selectedCategory, element) {
+            answered++;
+            const isCorrect = account.category === selectedCategory;
+
+            if (isCorrect) {
+                score++;
+                showFeedback('✓ 正确!', 'correct');
+                addToCategory(account, selectedCategory, true);
+            } else {
+                showFeedback(`✗ 错误! 正确答案是: ${account.category}`, 'incorrect');
+                addToCategory(account, selectedCategory, false);
+            }
+
+            updateScore();
+            
+            // 从当前账户列表中找到索引
+            const index = currentAccounts.findIndex(a => a.name === account.name);
+            
+            // 如果还有剩余账户，在原位置替换
+            if (remainingAccounts.length > 0) {
+                const newAccount = remainingAccounts.shift();
+                
+                // 在数组中替换
+                if (index > -1) {
+                    currentAccounts[index] = newAccount;
+                }
+                
+                // 创建新的DOM元素
+                const div = document.createElement('div');
+                div.className = 'account-item';
+                div.draggable = true;
+                div.setAttribute('data-account', JSON.stringify(newAccount));
+                div.innerHTML = `
+                    <strong>${newAccount.name}</strong><br>
+                    <small>${newAccount.chinese}</small>
+                `;
+                
+                // 添加拖拽事件
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragend', handleDragEnd);
+                
+                // 添加移动端触摸事件
+                div.addEventListener('touchstart', handleTouchStart);
+                div.addEventListener('touchmove', handleTouchMove);
+                div.addEventListener('touchend', handleTouchEnd);
+                
+                // 在原位置替换DOM元素
+                element.parentNode.replaceChild(div, element);
+            } else {
+                // 没有剩余账户了，直接移除
+                element.remove();
+                if (index > -1) {
+                    currentAccounts.splice(index, 1);
+                }
+                
+                // 如果所有账户都分类完了
+                if (currentAccounts.length === 0) {
+                    setTimeout(() => {
+                        showFinalScore();
+                    }, 500);
+                }
+            }
+        }
+
+        // 添加到分类区域
+        function addToCategory(account, category, isCorrect) {
+            const categoryId = category.toLowerCase().replace(/\s+/g, '-');
+            const droppedItems = document.getElementById(categoryId);
+            
+            const item = document.createElement('div');
+            item.className = `dropped-item ${isCorrect ? '' : 'incorrect'}`;
+            item.innerHTML = `
+                <span title="${account.name}\n${account.chinese}">
+                    <strong>${account.name}</strong>
+                </span>
+                <button onclick="removeItem(this)" title="移除">×</button>
+            `;
+            
+            droppedItems.appendChild(item);
+        }
+
+        // 移除项目
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        // 显示反馈
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type} show`;
+
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 100);
+        }
+
+        // 更新分数
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('answered').textContent = answered;
+        }
+
+        // 清空所有分类
+        function clearCategories() {
+            document.querySelectorAll('.dropped-items').forEach(container => {
+                container.innerHTML = '';
+            });
+        }
+
+        // 重新开始
+        function resetGame() {
+            if (confirm('确定要重新开始吗？当前进度将被清除。')) {
+                initGame();
+            }
+        }
+
+        // 查看答案
+        function showAnswer() {
+            if (currentAccounts.length > 0) {
+                let answerText = '当前账户答案:\n\n';
+                currentAccounts.forEach((account, index) => {
+                    answerText += `${index + 1}. ${account.name} (${account.chinese})\n   正确分类: ${account.category}\n\n`;
+                });
+                alert(answerText);
+            }
+        }
+
+        // 显示最终分数
+        function showFinalScore() {
+            const percentage = ((score / answered) * 100).toFixed(1);
+            alert(`🎉 练习完成!\n\n总题数: ${answered}\n正确: ${score}\n正确率: ${percentage}%`);
+        }
+
+        // 移动端触摸支持
+        let touchedElement = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        function handleTouchStart(e) {
+            touchedElement = e.target.closest('.account-item');
+            if (touchedElement) {
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                touchedElement.classList.add('dragging');
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (!touchedElement) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const moveX = touch.clientX - touchStartX;
+            const moveY = touch.clientY - touchStartY;
+            
+            touchedElement.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            
+            // 检测触摸位置下的分类区域
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const categoryBelow = elementBelow?.closest('.category');
+            
+            // 移除所有高亮
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('drag-over');
+            });
+            
+            // 高亮当前区域
+            if (categoryBelow) {
+                categoryBelow.classList.add('drag-over');
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchedElement) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const categoryBelow = elementBelow?.closest('.category');
+            
+            touchedElement.style.transform = '';
+            touchedElement.classList.remove('dragging');
+            
+            // 移除所有高亮
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('drag-over');
+            });
+            
+            if (categoryBelow) {
+                const accountData = JSON.parse(touchedElement.getAttribute('data-account'));
+                const droppedCategory = categoryBelow.getAttribute('data-category');
+                checkAnswer(accountData, droppedCategory, touchedElement);
+            }
+            
+            touchedElement = null;
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', initGame);
+        
+        // 强制应用背景色（覆盖缓存）
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.background = 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)';
+            document.body.style.backgroundAttachment = 'fixed';
+        });
+    </script>
+</body>
+</html>
