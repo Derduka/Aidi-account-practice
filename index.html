@@ -61,6 +61,53 @@
             font-weight: bold;
             color: #333;
         }
+        
+        .combo-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(245, 87, 108, 0.5);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+        
+        .combo-display.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .combo-display.combo-3 {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
+            animation: pulse 0.5s ease;
+        }
+        
+        .combo-display.combo-5 {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            animation: shake-combo 0.5s ease;
+        }
+        
+        .combo-display.combo-7 {
+            background: linear-gradient(135deg, #A770EF 0%, #CF8BF3 100%);
+            animation: rotate-combo 0.5s ease;
+        }
+        
+        .combo-display.combo-10 {
+            background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+            animation: bounce-combo 0.6s ease;
+        }
+        
+        .combo-display.combo-15 {
+            background: linear-gradient(135deg, #30CFD0 0%, #c43ad6 100%);
+            animation: rainbow-combo 1s ease;
+        }
 
         .account-pool {
             background: rgba(255, 255, 255, 0.95);
@@ -107,25 +154,30 @@
             text-align: center;
             flex: 1 1 0;
             min-width: 0;
-            overflow: hidden;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .account-item strong {
             display: block;
             font-size: 0.85em;
             margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.3;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
 
         .account-item small {
             font-size: 0.7em;
             opacity: 0.95;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.3;
+            word-wrap: break-word;
+            white-space: normal;
             display: block;
+            overflow-wrap: break-word;
         }
 
         .account-item:hover {
@@ -177,17 +229,21 @@
 
         .category h3 {
             color: #0093E9;
-            margin-bottom: 3px;
+            margin-bottom: 6px;
             padding-bottom: 3px;
             border-bottom: 2px solid #0093E9;
             font-size: 0.85em;
             font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px;
         }
 
         .category-subtitle {
             color: #999;
-            font-size: 0.65em;
-            margin-bottom: 6px;
+            font-size: 0.55em;
+            font-weight: 400;
         }
 
         .dropped-items {
@@ -287,10 +343,6 @@
         }
 
         .controls button:nth-child(2) {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .controls button:nth-child(3) {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
@@ -406,6 +458,37 @@
             25% { transform: translate(-50%, -50%) translateX(-10px); }
             75% { transform: translate(-50%, -50%) translateX(10px); }
         }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        @keyframes shake-combo {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            50% { transform: scale(1.15) rotate(0deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        @keyframes rotate-combo {
+            0% { transform: scale(0.8) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        @keyframes bounce-combo {
+            0%, 100% { transform: scale(1) translateY(0); }
+            25% { transform: scale(1.1) translateY(-10px); }
+            50% { transform: scale(1.2) translateY(-20px); }
+            75% { transform: scale(1.1) translateY(-10px); }
+        }
+        
+        @keyframes rainbow-combo {
+            0% { filter: hue-rotate(0deg); transform: scale(1); }
+            50% { filter: hue-rotate(180deg); transform: scale(1.3); }
+            100% { filter: hue-rotate(360deg); transform: scale(1); }
+        }
 
         @media (max-width: 768px) {
             header h1 {
@@ -415,6 +498,13 @@
             .score-board {
                 font-size: 0.75em;
                 padding: 5px 12px;
+            }
+            
+            .combo-display {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 1em;
             }
             
             .account-pool {
@@ -458,7 +548,7 @@
             }
             
             .category-subtitle {
-                font-size: 0.6em;
+                font-size: 0.5em;
             }
             
             .dropped-item {
@@ -543,6 +633,10 @@
                 <span>答题: <span id="answered">0</span></span>
             </div>
         </header>
+        
+        <div class="combo-display" id="comboDisplay">
+            🔥 <span id="comboCount">0</span> 连击!
+        </div>
 
         <div class="account-pool">
             <h2>📝 待分类账户</h2>
@@ -552,86 +646,72 @@
         <div class="main-content">
             <div class="categories">
                 <div class="category" data-category="CA">
-                    <h3>CA</h3>
-                    <p class="category-subtitle">Current Assets</p>
+                    <h3>CA <span class="category-subtitle">Current Assets</span></h3>
                     <div class="dropped-items" id="ca"></div>
                 </div>
 
                 <div class="category" data-category="NCA">
-                    <h3>NCA</h3>
-                    <p class="category-subtitle">Non-Current Assets</p>
+                    <h3>NCA <span class="category-subtitle">Non-Current Assets</span></h3>
                     <div class="dropped-items" id="nca"></div>
                 </div>
 
                 <div class="category" data-category="CL">
-                    <h3>CL</h3>
-                    <p class="category-subtitle">Current Liabilities</p>
+                    <h3>CL <span class="category-subtitle">Current Liabilities</span></h3>
                     <div class="dropped-items" id="cl"></div>
                 </div>
 
                 <div class="category" data-category="NCL">
-                    <h3>NCL</h3>
-                    <p class="category-subtitle">Non-Current Liabilities</p>
+                    <h3>NCL <span class="category-subtitle">Non-Current Liabilities</span></h3>
                     <div class="dropped-items" id="ncl"></div>
                 </div>
 
                 <div class="category" data-category="EQ">
-                    <h3>EQ</h3>
-                    <p class="category-subtitle">Equity</p>
+                    <h3>EQ <span class="category-subtitle">Equity</span></h3>
                     <div class="dropped-items" id="eq"></div>
                 </div>
                 
                 <div class="category" data-category="(EQ)">
-                    <h3>(EQ)</h3>
-                    <p class="category-subtitle">Negative Equity</p>
+                    <h3>(EQ) <span class="category-subtitle">Negative Equity</span></h3>
                     <div class="dropped-items" id="eq-neg"></div>
                 </div>
 
                 <div class="category" data-category="I">
-                    <h3>I</h3>
-                    <p class="category-subtitle">Income</p>
+                    <h3>I <span class="category-subtitle">Income</span></h3>
                     <div class="dropped-items" id="i"></div>
                 </div>
                 
                 <div class="category" data-category="(I)">
-                    <h3>(I)</h3>
-                    <p class="category-subtitle">Negative Income</p>
+                    <h3>(I) <span class="category-subtitle">Negative Income</span></h3>
                     <div class="dropped-items" id="i-neg"></div>
                 </div>
 
                 <div class="category" data-category="OI">
-                    <h3>OI</h3>
-                    <p class="category-subtitle">Other Income</p>
+                    <h3>OI <span class="category-subtitle">Other Income</span></h3>
                     <div class="dropped-items" id="oi"></div>
                 </div>
 
                 <div class="category" data-category="C">
-                    <h3>C</h3>
-                    <p class="category-subtitle">Cost</p>
+                    <h3>C <span class="category-subtitle">Cost</span></h3>
                     <div class="dropped-items" id="c"></div>
                 </div>
                 
                 <div class="category" data-category="(C)">
-                    <h3>(C)</h3>
-                    <p class="category-subtitle">Negative Cost</p>
+                    <h3>(C) <span class="category-subtitle">Negative Cost</span></h3>
                     <div class="dropped-items" id="c-neg"></div>
                 </div>
 
                 <div class="category" data-category="SD">
-                    <h3>SD</h3>
-                    <p class="category-subtitle">Selling & Distribution</p>
+                    <h3>SD <span class="category-subtitle">Selling & Distribution</span></h3>
                     <div class="dropped-items" id="sd"></div>
                 </div>
 
                 <div class="category" data-category="GA">
-                    <h3>GA</h3>
-                    <p class="category-subtitle">General & Admin</p>
+                    <h3>GA <span class="category-subtitle">General & Admin</span></h3>
                     <div class="dropped-items" id="ga"></div>
                 </div>
 
                 <div class="category" data-category="FE">
-                    <h3>FE</h3>
-                    <p class="category-subtitle">Financial Expense</p>
+                    <h3>FE <span class="category-subtitle">Financial Expense</span></h3>
                     <div class="dropped-items" id="fe"></div>
                 </div>
             </div>
@@ -640,7 +720,6 @@
         <div class="controls">
             <button onclick="nextAccount()">下一题</button>
             <button onclick="resetGame()">重新开始</button>
-            <button onclick="showAnswer()">查看答案</button>
         </div>
     </div>
 
@@ -652,7 +731,7 @@
             // CA - Current Assets (流动资产)
             { name: 'Cash at bank', category: 'CA', chinese: '银行存款' },
             { name: 'Accounts receivable', category: 'CA', chinese: '应收账款' },
-            { name: 'Debtor', category: 'CA', chinese: '应收账款(同义)' },
+            { name: 'Debtor', category: 'CA', chinese: '债务人' },
             { name: 'Inventory', category: 'CA', chinese: '存货' },
             { name: 'Office supplies', category: 'CA', chinese: '办公用品' },
             { name: 'Stationery supplies', category: 'CA', chinese: '文具用品' },
@@ -670,12 +749,13 @@
 
             // CL - Current Liabilities (流动负债)
             { name: 'Accounts payable', category: 'CL', chinese: '应付账款' },
-            { name: 'Creditors', category: 'CL', chinese: '应付账款(同义)' },
+            { name: 'Creditors', category: 'CL', chinese: '债权人' },
             { name: 'Bank overdraft', category: 'CL', chinese: '银行透支' },
             { name: 'Short term loan', category: 'CL', chinese: '短期贷款' },
             { name: 'GST Payable', category: 'CL', chinese: '应付GST' },
             { name: 'Accrued expense', category: 'CL', chinese: '应计费用' },
-            { name: 'Unearned income/Revenue', category: 'CL', chinese: '预收收入' },
+            { name: 'Unearned income', category: 'CL', chinese: '预收收入' },
+            { name: 'Unearned Revenue', category: 'CL', chinese: '预收收入' },
 
             // NCL - Non-Current Liabilities (非流动负债)
             { name: 'Long-term loan', category: 'NCL', chinese: '长期贷款' },
@@ -694,7 +774,7 @@
 
             // (I) - 负收入 (Sales Return, Discount allowed)
             { name: 'Sales Return', category: '(I)', chinese: '销售退回' },
-            { name: 'Discount allowed', category: '(I)', chinese: '销售折扣' },
+            { name: 'Discount allowed', category: '(I)', chinese: '给予折扣' },
 
             // OI - Other Income (其他收入)
             { name: 'Gain on sale of assets', category: 'OI', chinese: '资产处置收益' },
@@ -703,30 +783,38 @@
             { name: 'Investment income', category: 'OI', chinese: '投资收益' },
 
             // C - Cost (成本)
-            { name: 'Cost of sale (Cost of goods sold)', category: 'C', chinese: '销售成本' },
-            { name: 'Freight inwards (carriage inwards)', category: 'C', chinese: '进货运费' },
+            { name: 'Cost of sale', category: 'C', chinese: '销售成本' },
+            { name: 'Cost of goods sold', category: 'C', chinese: '销售成本' },
+            { name: 'Freight inwards', category: 'C', chinese: '进货运费' },
+            { name: 'Carriage inwards', category: 'C', chinese: '进货运费' },
+            { name: 'Purchase', category: 'C', chinese: '采购' },
 
             // (C) - 负成本 (Discount Received)
-            { name: 'Discount Received', category: '(C)', chinese: '进货折扣' },
+            { name: 'Discount Received', category: '(C)', chinese: '收到折扣' },
 
             // SD - Selling and distributions expense (销售费用)
             { name: 'Advertising', category: 'SD', chinese: '广告费' },
-            { name: 'Sales wages (salaries)', category: 'SD', chinese: '销售工资' },
+            { name: 'Sales wages', category: 'SD', chinese: '销售人员工资' },
+            { name: 'Sales salaries', category: 'SD', chinese: '销售人员薪金' },
             { name: 'Sales commission', category: 'SD', chinese: '销售佣金' },
-            { name: 'Freight outwards (carriage outwards)', category: 'SD', chinese: '销售运费' },
-            { name: 'Repair of delivery vehicle', category: 'SD', chinese: '配送车维修' },
-            { name: 'Insurance on delivery vehicle', category: 'SD', chinese: '配送车保险' },
-            { name: 'Wages on delivery vehicle driver', category: 'SD', chinese: '司机工资' },
+            { name: 'Freight outwards', category: 'SD', chinese: '销售运费' },
+            { name: 'Carriage outwards', category: 'SD', chinese: '销售运费' },
+            { name: 'Repair of delivery vehicle', category: 'SD', chinese: '配送车辆维修' },
+            { name: 'Insurance on delivery vehicle', category: 'SD', chinese: '配送车辆保险' },
+            { name: 'Wages on delivery vehicle driver', category: 'SD', chinese: '配送司机工资' },
             { name: 'Delivery fee', category: 'SD', chinese: '配送费' },
             { name: 'Bad debts', category: 'SD', chinese: '坏账' },
-            { name: 'Doubtful debts', category: 'SD', chinese: '可疑账款' },
+            { name: 'Bad debts expense', category: 'SD', chinese: '坏账费用' },
+            { name: 'Doubtful debts', category: 'SD', chinese: '呆账' },
+            { name: 'Doubtful debts expense', category: 'SD', chinese: '呆账费用' },
             { name: 'Promotion expense', category: 'SD', chinese: '促销费用' },
 
             // GA - General and administration expense (管理费用)
-            { name: 'Office wages (salaries)', category: 'GA', chinese: '办公室工资' },
+            { name: 'Office wages', category: 'GA', chinese: '办公室工资' },
+            { name: 'Office salaries', category: 'GA', chinese: '办公室薪金' },
             { name: 'Insurance', category: 'GA', chinese: '保险费' },
             { name: 'Electricity', category: 'GA', chinese: '电费' },
-            { name: 'Repair and Maintenance', category: 'GA', chinese: '维修费' },
+            { name: 'Repair and Maintenance', category: 'GA', chinese: '维修保养费' },
             { name: 'Rent', category: 'GA', chinese: '租金' },
             { name: 'Telephone', category: 'GA', chinese: '电话费' },
             { name: 'Stationery expense', category: 'GA', chinese: '文具费' },
@@ -736,14 +824,19 @@
             { name: 'Loss on sale of office furniture', category: 'GA', chinese: '办公家具处置损失' },
 
             // FE - Financial expense (财务费用)
-            { name: 'Bank fees or bank charge', category: 'FE', chinese: '银行手续费' },
-            { name: 'Interest on loan (Interest expense)', category: 'FE', chinese: '贷款利息' }
+            { name: 'Bank fees', category: 'FE', chinese: '银行手续费' },
+            { name: 'Bank charge', category: 'FE', chinese: '银行手续费' },
+            { name: 'Interest on loan', category: 'FE', chinese: '贷款利息' },
+            { name: 'Interest expense', category: 'FE', chinese: '利息支出' }
         ];
 
         let remainingAccounts = [...accountsData];
         let currentAccounts = []; // 当前显示的3个账户
         let score = 0;
         let answered = 0;
+        let combo = 0; // 连击数
+        let maxCombo = 0; // 最高连击
+        let wrongAnswers = []; // 记录错题
 
         // 初始化游戏
         function initGame() {
@@ -751,7 +844,11 @@
             shuffleArray(remainingAccounts);
             score = 0;
             answered = 0;
+            combo = 0;
+            maxCombo = 0;
+            wrongAnswers = [];
             updateScore();
+            updateCombo();
             clearCategories();
             showNextAccount();
         }
@@ -764,7 +861,7 @@
             }
         }
 
-        // 显示下一批账户（2个）
+        // 显示下一批账户(2个)
         function showNextAccount() {
             if (remainingAccounts.length === 0) {
                 showFinalScore();
@@ -861,11 +958,25 @@
 
             if (isCorrect) {
                 score++;
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                
                 showFeedback('✓ 正确!', 'correct');
                 addToCategory(account, selectedCategory, true);
+                updateCombo();
+                checkComboMilestone();
             } else {
+                combo = 0; // 错误则连击清零
                 showFeedback(`✗ 错误! 正确答案是: ${account.category}`, 'incorrect');
                 addToCategory(account, selectedCategory, false);
+                updateCombo();
+                // 记录错题
+                wrongAnswers.push({
+                    name: account.name,
+                    chinese: account.chinese,
+                    yourAnswer: selectedCategory,
+                    correctAnswer: account.category
+                });
             }
 
             updateScore();
@@ -873,7 +984,7 @@
             // 从当前账户列表中找到索引
             const index = currentAccounts.findIndex(a => a.name === account.name);
             
-            // 如果还有剩余账户，在原位置替换
+            // 如果还有剩余账户,在原位置替换
             if (remainingAccounts.length > 0) {
                 const newAccount = remainingAccounts.shift();
                 
@@ -904,7 +1015,7 @@
                 // 在原位置替换DOM元素
                 element.parentNode.replaceChild(div, element);
             } else {
-                // 没有剩余账户了，直接移除
+                // 没有剩余账户了,直接移除
                 element.remove();
                 if (index > -1) {
                     currentAccounts.splice(index, 1);
@@ -942,7 +1053,7 @@
             const droppedItem = button.parentElement;
             const accountData = JSON.parse(droppedItem.getAttribute('data-account'));
             
-            // 返回到后台库（不是待选区）
+            // 返回到后台库(不是待选区)
             remainingAccounts.push(accountData);
             
             // 移除已分类的项目
@@ -966,6 +1077,48 @@
         function updateScore() {
             document.getElementById('score').textContent = score;
             document.getElementById('answered').textContent = answered;
+        }
+        
+        // 更新连击显示
+        function updateCombo() {
+            const comboDisplay = document.getElementById('comboDisplay');
+            const comboCount = document.getElementById('comboCount');
+            
+            if (combo >= 3) {
+                comboCount.textContent = combo;
+                comboDisplay.classList.add('show');
+                
+                // 根据连击数改变样式
+                comboDisplay.className = 'combo-display show';
+                if (combo >= 15) {
+                    comboDisplay.className = 'combo-display show combo-15';
+                    comboDisplay.innerHTML = '🏆 <span id="comboCount">' + combo + '</span> 连击! LEGENDARY!';
+                } else if (combo >= 10) {
+                    comboDisplay.className = 'combo-display show combo-10';
+                    comboDisplay.innerHTML = '💎 <span id="comboCount">' + combo + '</span> 连击! Perfect!';
+                } else if (combo >= 7) {
+                    comboDisplay.className = 'combo-display show combo-7';
+                    comboDisplay.innerHTML = '🌟 <span id="comboCount">' + combo + '</span> 连击! Amazing!';
+                } else if (combo >= 5) {
+                    comboDisplay.className = 'combo-display show combo-5';
+                    comboDisplay.innerHTML = '⚡ <span id="comboCount">' + combo + '</span> 连击! Excellent!';
+                } else if (combo >= 3) {
+                    comboDisplay.className = 'combo-display show combo-3';
+                    comboDisplay.innerHTML = '🔥 <span id="comboCount">' + combo + '</span> 连击! Good!';
+                }
+            } else {
+                comboDisplay.classList.remove('show');
+            }
+        }
+        
+        // 检查连击里程碑
+        function checkComboMilestone() {
+            if (combo === 3 || combo === 5 || combo === 7 || combo === 10 || combo === 15) {
+                // 手机震动反馈
+                if (navigator.vibrate) {
+                    navigator.vibrate([50, 30, 50]);
+                }
+            }
         }
 
         // 清空所有分类
@@ -1028,7 +1181,19 @@
         // 显示最终分数
         function showFinalScore() {
             const percentage = ((score / answered) * 100).toFixed(1);
-            const message = `🎉 练习完成！\n\n总题数: ${answered}\n正确: ${score}\n正确率: ${percentage}%\n\n点击屏幕任意处关闭`;
+            let message = `🎉 练习完成！\n\n总题数: ${answered}\n正确: ${score}\n错误: ${answered - score}\n正确率: ${percentage}%\n最高连击: ${maxCombo} 🔥`;
+            
+            // 如果有错题，显示错题列表
+            if (wrongAnswers.length > 0) {
+                message += `\n\n📋 错题回顾：\n`;
+                wrongAnswers.forEach((item, index) => {
+                    message += `\n${index + 1}. ${item.name}\n   ${item.chinese}\n   ✗ 你的答案: ${item.yourAnswer}\n   ✓ 正确答案: ${item.correctAnswer}\n`;
+                });
+            } else {
+                message += `\n\n🏆 太棒了！全部答对！`;
+            }
+            
+            message += `\n\n点击屏幕任意处关闭`;
             showFeedback(message, 'info');
             
             const closeFinal = () => {
@@ -1080,7 +1245,7 @@
             
             const touch = e.touches[0];
             
-            // 移动克隆元素（固定定位，跟随手指）
+            // 移动克隆元素(固定定位,跟随手指)
             dragClone.style.left = (touch.clientX - elementOffsetX) + 'px';
             dragClone.style.top = (touch.clientY - elementOffsetY) + 'px';
             
@@ -1131,7 +1296,7 @@
         // 页面加载时初始化
         window.addEventListener('load', initGame);
         
-        // 强制应用背景色（覆盖缓存）
+        // 强制应用背景色(覆盖缓存)
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.background = 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)';
             document.body.style.backgroundAttachment = 'fixed';
